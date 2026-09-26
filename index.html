@@ -427,17 +427,15 @@ function renderCategoryPage(catIndex) {
   mainEl.innerHTML = html;
 }
 
+const AI_SHOPPER_INSTRUCTIONS = `I need you to do a grocery shop for me on Woolworths NZ, delivering to my local store in Gisborne, New Zealand. Please schedule the soonest available delivery slot. Where an item has multiple options, prioritise the healthiest version (e.g. less added sugar, fewer additives, wholegrain over refined, organic where reasonably priced). I will do a final review of the cart and complete the purchase myself — please don't finalise payment.
+
+One shopping rule to apply throughout: for any canned items (beans, chickpeas, lentils, tomatoes, coconut cream), skip Macro Organic brand specifically — the price premium isn't worth it, so any standard or Woolworths house brand is fine.`;
+
 function buildOutputText() {
   const lines = [];
-  lines.push("GROCERY SHOPPING LIST");
-  lines.push(`Generated: ${new Date().toLocaleDateString()}`);
-
-  const generalNotes = CATEGORIES.filter(c => c.categoryNote && c.items.some(i => i.selected));
-  if (generalNotes.length) {
-    lines.push("");
-    lines.push("Shopping notes:");
-    generalNotes.forEach(c => lines.push(`- ${c.categoryNote}`));
-  }
+  lines.push(AI_SHOPPER_INSTRUCTIONS);
+  lines.push("");
+  lines.push(`Here's this week's list (generated ${new Date().toLocaleDateString()}):`);
 
   CATEGORIES.forEach(cat => {
     const picked = cat.items.filter(i => i.selected);
