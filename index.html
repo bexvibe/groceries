@@ -2,26 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Weekly Grocery Picker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f7f5;
-    --card-bg: #ffffff;
-    --accent: #2f9e58;
-    --accent-light: #eaf7ef;
-    --accent-dark: #237a44;
-    --text: #1f2430;
-    --muted: #6b7280;
-    --border: #e3e6e1;
+    color-scheme: light;
+    --page: #F2F2F2;
+    --surface: #FFFFFF;
+    --line: #DCDCDC;
+    --accent-soft: #E7E7E7;
+    --ink-soft: #6E6E6E;
+    --accent: #1A1A1A;
+    --ink: #121212;
+
+    --ease: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-ms: 260ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root { --ease-ms: 0ms; }
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0;
     padding: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--page);
+    color: var(--ink);
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
   .app {
     max-width: 640px;
@@ -31,15 +41,15 @@
     flex-direction: column;
   }
   header {
-    padding: 16px 20px 0;
+    padding: calc(16px + env(safe-area-inset-top)) 20px 0;
     position: sticky;
     top: 0;
-    background: var(--bg);
+    background: var(--page);
     z-index: 5;
   }
   .progress-bar {
-    height: 6px;
-    background: var(--border);
+    height: 4px;
+    background: var(--line);
     border-radius: 999px;
     overflow: hidden;
   }
@@ -47,44 +57,44 @@
     height: 100%;
     background: var(--accent);
     border-radius: 999px;
-    transition: width 0.25s ease;
+    transition: width var(--ease-ms) var(--ease);
     width: 0%;
   }
   .header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 10px 2px 14px;
+    padding: 12px 2px 16px;
   }
   .step-label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
+    color: var(--ink-soft);
   }
   main {
     flex: 1;
-    padding: 4px 20px calc(96px + env(safe-area-inset-bottom));
+    padding: 4px 20px calc(100px + env(safe-area-inset-bottom));
   }
   h1.cat-title {
-    font-size: 1.5rem;
-    margin: 0 0 4px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(25px, 7.18vw, 31px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 6px;
   }
   p.cat-subtitle {
-    color: var(--muted);
-    font-size: 0.92rem;
-    margin: 0 0 16px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    margin: 0 0 20px;
   }
   .cat-note {
-    background: #fff7e6;
-    border: 1px solid #f3dfa8;
-    color: #7a5a12;
-    font-size: 0.85rem;
-    padding: 10px 12px;
-    border-radius: 10px;
-    margin-bottom: 16px;
-    line-height: 1.4;
+    border-left: 2px solid var(--line);
+    padding-left: 12px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 60ch;
   }
   .chips-grid {
     display: flex;
@@ -92,87 +102,90 @@
     gap: 10px;
   }
   .chip {
-    background: var(--card-bg);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 10px 14px;
-    transition: border-color 0.15s ease, background 0.15s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .chip.selected {
-    background: var(--accent-light);
-    border-color: var(--accent);
-  }
-  .chip-name {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-    font: inherit;
-    color: inherit;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .chip-title {
-    font-size: 0.94rem;
-    font-weight: 500;
-    line-height: 1.3;
-  }
-  .chip.selected .chip-title {
-    color: var(--accent-dark);
-    font-weight: 600;
-  }
-  .chip-note {
-    font-size: 0.74rem;
-    color: var(--muted);
-    font-style: italic;
-  }
-  .qty-row {
+    min-height: 44px;
     display: flex;
     align-items: center;
     gap: 10px;
+    padding: 8px 8px 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-soft);
+    transition: background var(--ease-ms) var(--ease), border-color var(--ease-ms) var(--ease), color var(--ease-ms) var(--ease);
+  }
+  .chip.selected {
+    border-color: transparent;
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+  .chip-name {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 8px 0;
+    margin: 0;
+    text-align: left;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: inherit;
+    cursor: pointer;
+    line-height: 1.35;
+  }
+  .chip-note {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .qty-row {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
   .qty-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    border: 1.5px solid var(--accent);
-    background: #fff;
-    color: var(--accent-dark);
-    font-size: 1.1rem;
-    line-height: 1;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
+    transition: background var(--ease-ms) var(--ease), border-color var(--ease-ms) var(--ease);
+  }
+  .qty-btn svg {
+    width: 15px;
+    height: 15px;
+    display: block;
   }
   .qty-btn:disabled {
     opacity: 0.35;
     cursor: default;
   }
   .qty-btn:active:not(:disabled) {
-    background: var(--accent-light);
+    background: var(--accent-soft);
   }
   .qty-value {
-    min-width: 46px;
+    min-width: 44px;
     text-align: center;
-    font-size: 0.88rem;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 12px;
     font-weight: 600;
-    color: var(--text);
+    color: var(--ink);
   }
   footer {
     display: flex;
-    gap: 12px;
-    padding: 14px 20px calc(22px + env(safe-area-inset-bottom));
-    background: var(--bg);
-    border-top: 1px solid var(--border);
+    gap: 8px;
+    padding: 14px 20px calc(20px + env(safe-area-inset-bottom));
+    background: var(--surface);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.11);
     position: fixed;
     bottom: 0;
     left: 0;
@@ -183,57 +196,50 @@
   }
   .btn {
     flex: 1;
-    padding: 13px 16px;
-    border-radius: 12px;
-    font-size: 1rem;
+    min-height: 44px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 13px;
     font-weight: 600;
-    border: none;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--page);
     cursor: pointer;
   }
   .btn-secondary {
-    background: #fff;
-    border: 1.5px solid var(--border);
-    color: var(--text);
+    background: transparent;
+    border-color: var(--line);
+    color: var(--ink);
   }
   .btn-secondary:disabled {
     opacity: 0.4;
     cursor: default;
   }
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-  }
   .btn-primary:active {
-    background: var(--accent-dark);
+    opacity: 0.85;
   }
   .review-textarea {
     width: 100%;
     min-height: 360px;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    font-size: 0.86rem;
-    line-height: 1.5;
-    padding: 14px;
-    border-radius: 12px;
-    border: 1.5px solid var(--border);
-    background: #fff;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
     resize: vertical;
-    color: var(--text);
+    color: var(--ink);
   }
   .review-actions {
     display: flex;
-    gap: 10px;
-    margin-top: 12px;
+    gap: 8px;
+    margin-top: 14px;
   }
   .review-actions .btn {
     flex: none;
-    padding: 10px 16px;
-    font-size: 0.9rem;
-  }
-  .empty-note {
-    color: var(--muted);
-    font-size: 0.9rem;
-    text-align: center;
-    padding: 40px 10px;
+    padding: 9px 16px;
   }
 </style>
 </head>
@@ -386,6 +392,9 @@ const stepLabel = document.getElementById("stepLabel");
 const backBtn = document.getElementById("backBtn");
 const nextBtn = document.getElementById("nextBtn");
 
+const MINUS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>`;
+const PLUS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>`;
+
 function qtyStep(unit) {
   return unit === "kg" ? 0.5 : 1;
 }
@@ -410,14 +419,14 @@ function renderCategoryPage(catIndex) {
     html += `
       <div class="chip ${item.selected ? "selected" : ""}">
         <button type="button" class="chip-name" data-action="toggle" data-cat="${catIndex}" data-idx="${idx}">
-          <span class="chip-title">${item.name}</span>
+          ${item.name}
           ${item.note ? `<span class="chip-note">${item.note}</span>` : ""}
         </button>
         ${item.selected ? `
           <div class="qty-row">
-            <button type="button" class="qty-btn" data-action="dec" data-cat="${catIndex}" data-idx="${idx}" ${item.qty <= min ? "disabled" : ""}>−</button>
+            <button type="button" class="qty-btn" data-action="dec" data-cat="${catIndex}" data-idx="${idx}" ${item.qty <= min ? "disabled" : ""} aria-label="Decrease quantity">${MINUS_ICON}</button>
             <span class="qty-value">${formatQty(item.qty, item.unit)}</span>
-            <button type="button" class="qty-btn" data-action="inc" data-cat="${catIndex}" data-idx="${idx}">+</button>
+            <button type="button" class="qty-btn" data-action="inc" data-cat="${catIndex}" data-idx="${idx}" aria-label="Increase quantity">${PLUS_ICON}</button>
           </div>
         ` : ""}
       </div>
@@ -464,8 +473,8 @@ function renderReviewPage() {
     <p class="cat-subtitle">Copy this and hand it to your shopping assistant.</p>
     <textarea class="review-textarea" id="reviewText" readonly>${text.replace(/</g, "&lt;")}</textarea>
     <div class="review-actions">
-      <button type="button" class="btn btn-primary" id="copyBtn" style="flex:none;">Copy list</button>
-      <button type="button" class="btn btn-secondary" id="resetBtn" style="flex:none;">Start over</button>
+      <button type="button" class="btn btn-primary" id="copyBtn">Copy list</button>
+      <button type="button" class="btn btn-secondary" id="resetBtn">Start over</button>
     </div>
   `;
   document.getElementById("copyBtn").addEventListener("click", async () => {
