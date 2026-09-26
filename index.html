@@ -65,7 +65,7 @@
   }
   main {
     flex: 1;
-    padding: 4px 20px 24px;
+    padding: 4px 20px calc(96px + env(safe-area-inset-bottom));
   }
   h1.cat-title {
     font-size: 1.5rem;
@@ -170,9 +170,16 @@
   footer {
     display: flex;
     gap: 12px;
-    padding: 14px 20px 22px;
+    padding: 14px 20px calc(22px + env(safe-area-inset-bottom));
     background: var(--bg);
     border-top: 1px solid var(--border);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 640px;
+    margin: 0 auto;
+    z-index: 10;
   }
   .btn {
     flex: 1;
