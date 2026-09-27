@@ -267,7 +267,7 @@ const CATEGORIES = [
   ]},
   { name: "Fridge & Deli", items: [
     { name: "Anchor Cottage Cheese Original", short: "Cottage cheese", qty: 1, unit: "ea" },
-    { name: "Best Bones Soup Organic Beef Broth", short: "Beef broth", qty: 1, unit: "ea" },
+    { name: "Best Bones Soup Organic Beef Broth", short: "Bone broth", qty: 1, unit: "ea" },
     { name: "Genoese Fresh Pesto Chilled Ground With Fresh Basil", short: "Basil pesto", qty: 1, unit: "ea" },
     { name: "Gopala Yoghurt Tub Greek Style", short: "Greek yoghurt", qty: 4, unit: "ea" },
     { name: "Ocean Blue Smoked Salmon Hot Smoked Pepper", short: "Smoked salmon", qty: 2, unit: "ea" },
@@ -303,7 +303,7 @@ const CATEGORIES = [
     { name: "Carrot", qty: 6, unit: "ea" },
   ]},
   { name: "Meat & Fish", items: [
-    { name: "Woolworths Asado Beef Short Ribs (min order 600g)", short: "Beef short ribs", qty: 2, unit: "ea" },
+    { name: "Woolworths Asado Beef Short Ribs (min order 600g)", short: "Beef short ribs", qty: 2, unit: "ea", note: "min order 600g" },
     { name: "Salmon (fresh)", short: "Salmon", qty: 1, unit: "ea", note: "if not already covered by smoked" },
     { name: "Canned tuna (Woolworths Tuna In Spring Water)", short: "Canned tuna", qty: 3, unit: "ea" },
   ]},
@@ -455,7 +455,7 @@ function buildOutputText() {
     picked.forEach(item => {
       const qtyStr = formatQty(item.qty, item.unit);
       const noteStr = item.note ? ` (${item.note})` : "";
-      lines.push(`- ${item.name} x${qtyStr}${noteStr}`);
+      lines.push(`- ${item.short || item.name} x${qtyStr}${noteStr}`);
     });
   });
 
