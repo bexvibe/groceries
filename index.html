@@ -275,6 +275,7 @@ const CATEGORIES = [
     { name: "The Collective Kefir Pourable Probiotic Yoghurt Natural", short: "Kefir", qty: 2, unit: "ea" },
     { name: "The Odd Bunch Fresh Fruit Apples", short: "Apples", qty: 1, unit: "ea" },
     { name: "Woolworths Cheese Edam Large", short: "Edam cheese", qty: 1, unit: "ea" },
+    { name: "Feta", qty: 1, unit: "ea", always: true },
     { name: "Butter", qty: 1, unit: "ea" },
     { name: "Eggs", qty: 2, unit: "dozen" },
     { name: "Mayonnaise (Heinz Seriously Good Olive Oil)", short: "Mayonnaise", qty: 1, unit: "ea" },
@@ -296,7 +297,7 @@ const CATEGORIES = [
     { name: "Leek", qty: 1, unit: "ea" },
     { name: "Rocket", qty: 2, unit: "ea" },
     { name: "Spinach", qty: 1, unit: "ea" },
-    { name: "Zucchini", qty: 4, unit: "ea" },
+    { name: "Courgette", qty: 4, unit: "ea" },
     { name: "Pumpkin (peeled, no skin)", short: "Pumpkin", qty: 1, unit: "ea" },
     { name: "Spring onion", qty: 1, unit: "ea" },
     { name: "Kumara", qty: 1, unit: "ea" },
@@ -310,14 +311,14 @@ const CATEGORIES = [
   { name: "Household", items: [
     { name: "Essentials Toilet Paper 12pk White 2ply", short: "Toilet paper", qty: 1, unit: "ea" },
     { name: "Stain remover spray", qty: 1, unit: "ea" },
-    { name: "Laundry detergent, sensitive/fragrance-free", short: "Laundry detergent", qty: 1, unit: "ea", note: "needed next week" },
-    { name: "Mop", qty: 1, unit: "ea", note: "needed next week" },
+    { name: "Laundry detergent, sensitive/fragrance-free", short: "Laundry detergent", qty: 1, unit: "ea" },
+    { name: "Mop", qty: 1, unit: "ea" },
   ]},
   { name: "Pantry — Condiments & Vinegar", items: [
-    { name: "Bragg Apple Cider Vinegar Organic", short: "Apple cider vinegar", qty: 1, unit: "ea", note: "needed next shop" },
+    { name: "Bragg Apple Cider Vinegar Organic", short: "Apple cider vinegar", qty: 1, unit: "ea" },
     { name: "Dyc White Vinegar", short: "White vinegar", qty: 1, unit: "ea" },
     { name: "White wine (cooking)", short: "Cooking wine", qty: 1, unit: "ea" },
-    { name: "Chili oil", qty: 1, unit: "ea", note: "needed next shop" },
+    { name: "Chili oil", qty: 1, unit: "ea" },
     { name: "Woolworths Pizza Sauce Garlic & Basil", short: "Pizza sauce", qty: 1, unit: "ea" },
     { name: "Soy sauce", qty: 1, unit: "ea" },
     { name: "Rice vinegar", qty: 1, unit: "ea" },
@@ -342,7 +343,7 @@ const CATEGORIES = [
     { name: "Diamond Pasta Orzo", short: "Orzo pasta", qty: 1, unit: "ea" },
     { name: "Tio Pablo Corn Tortillas Gluten Free", short: "Corn tortillas", qty: 1, unit: "ea" },
     { name: "Harraways Oats Extra Creamy", short: "Oats", qty: 1, unit: "ea" },
-    { name: "Ceres Organics Brown Rice Crackers Original", short: "Rice crackers", qty: 1, unit: "ea" },
+    { name: "Ceres Organics Brown Rice Crackers Original", short: "Rice crackers", qty: 2, unit: "ea" },
     { name: "Woolworths Brown Sugar", short: "Brown sugar", qty: 1, unit: "ea" },
     { name: "Freshlife Chickpea Flour Gluten Free", short: "Chickpea flour", qty: 1, unit: "ea" },
     { name: "Soba noodles", qty: 1, unit: "ea" },
@@ -356,8 +357,8 @@ const CATEGORIES = [
     { name: "Woolworths Sesame Seeds", short: "Sesame seeds", qty: 1, unit: "ea" },
     { name: "Cinderella Camel Dates Pitted", short: "Dates", qty: 1, unit: "ea" },
     { name: "Whittaker's Chocolate Creamy Milk", short: "Chocolate", qty: 3, unit: "ea" },
-    { name: "Peanut butter", qty: 1, unit: "ea", note: "needed next shop" },
-    { name: "Wraps", qty: 1, unit: "ea", note: "needed next shop" },
+    { name: "Peanut butter", qty: 1, unit: "ea" },
+    { name: "Wraps", qty: 1, unit: "ea" },
     { name: "Chia seeds", qty: 1, unit: "ea" },
     { name: "Flaxseed", qty: 1, unit: "ea" },
     { name: "Almonds", qty: 1, unit: "ea" },
@@ -371,7 +372,7 @@ const CATEGORIES = [
   ]},
   { name: "Oils", items: [
     { name: "Woolworths Olive Oil Extra Virgin", short: "Olive oil", qty: 1, unit: "ea" },
-    { name: "Coconut oil", qty: 1, unit: "ea", note: "needed next shop" },
+    { name: "Coconut oil", qty: 1, unit: "ea" },
   ]},
   { name: "Ceres Organics Sauerkraut", items: [
     { name: "Ceres Organics Sauerkraut", short: "Sauerkraut", qty: 1, unit: "ea" },
@@ -381,7 +382,7 @@ const CATEGORIES = [
 // runtime state lives directly on each item: item.selected, item.qty (starts at defaultQty)
 CATEGORIES.forEach(cat => cat.items.forEach(item => {
   item.defaultQty = item.qty;
-  item.selected = false;
+  item.selected = !!item.always;
 }));
 
 const TOTAL_STEPS = CATEGORIES.length + 1; // + review page
@@ -493,7 +494,7 @@ function renderReviewPage() {
   });
   document.getElementById("resetBtn").addEventListener("click", () => {
     CATEGORIES.forEach(cat => cat.items.forEach(item => {
-      item.selected = false;
+      item.selected = !!item.always;
       item.qty = item.defaultQty;
     }));
     step = 0;
