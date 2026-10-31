@@ -267,12 +267,12 @@ const CATEGORIES = [
   ]},
   { name: "Fridge & Deli", items: [
     { name: "Anchor Cottage Cheese Original", short: "Cottage cheese", qty: 1, unit: "ea" },
-    { name: "Best Bones Soup Organic Beef Broth", short: "Bone broth", qty: 1, unit: "ea" },
+    { name: "Best Bones Soup Organic Beef Broth", short: "Bone broth", qty: 1, unit: "ea", regular: true },
     { name: "Genoese Fresh Pesto Chilled Ground With Fresh Basil", short: "Basil pesto", qty: 1, unit: "ea" },
-    { name: "Gopala Yoghurt Tub Greek Style", short: "Greek yoghurt", qty: 4, unit: "ea" },
-    { name: "Ocean Blue Smoked Salmon Hot Smoked Pepper", short: "Smoked salmon", qty: 2, unit: "ea" },
+    { name: "Gopala Yoghurt Tub Greek Style", short: "Greek yoghurt", qty: 4, unit: "ea", regular: true },
+    { name: "Ocean Blue Smoked Salmon Hot Smoked Pepper", short: "Smoked salmon", qty: 2, unit: "ea", regular: true },
     { name: "Raw Be Nourished Kimchi Fiery Asian Cabbage Organic", short: "Kimchi", qty: 1, unit: "ea" },
-    { name: "The Collective Kefir Pourable Probiotic Yoghurt Natural", short: "Kefir", qty: 2, unit: "ea" },
+    { name: "The Collective Kefir Pourable Probiotic Yoghurt Natural", short: "Kefir", qty: 2, unit: "ea", regular: true },
     { name: "The Odd Bunch Fresh Fruit Apples", short: "Apples", qty: 1, unit: "ea" },
     { name: "Woolworths Cheese Edam Large", short: "Edam cheese", qty: 1, unit: "ea" },
     { name: "Feta", qty: 1, unit: "ea", always: true },
@@ -288,7 +288,7 @@ const CATEGORIES = [
     { name: "Frozen crumbed fish", short: "Crumbed fish", qty: 1, unit: "ea" },
   ]},
   { name: "Fruit & Veg", items: [
-    { name: "Fresh Fruit Bananas Yellow Loose", short: "Bananas", qty: 2, unit: "kg" },
+    { name: "Fresh Fruit Bananas Yellow Loose", short: "Bananas", qty: 2, unit: "kg", regular: true },
     { name: "Fresh Fruit Lemon Everyday Loose", short: "Lemons", qty: 2, unit: "kg" },
     { name: "Fresh Tomatoes Loose", short: "Tomatoes", qty: 4, unit: "ea" },
     { name: "Fresh Vegetable Cucumbers Lebanese", short: "Cucumbers", qty: 2, unit: "ea" },
@@ -297,7 +297,7 @@ const CATEGORIES = [
     { name: "Leek", qty: 1, unit: "ea" },
     { name: "Rocket", qty: 2, unit: "ea" },
     { name: "Spinach", qty: 1, unit: "ea" },
-    { name: "Courgette", qty: 4, unit: "ea" },
+    { name: "Courgette", qty: 4, unit: "ea", regular: true },
     { name: "Pumpkin (peeled, no skin)", short: "Pumpkin", qty: 1, unit: "ea" },
     { name: "Spring onion", qty: 1, unit: "ea" },
     { name: "Kumara", qty: 1, unit: "ea" },
@@ -341,9 +341,9 @@ const CATEGORIES = [
   { name: "Pantry — Grains & Baking", items: [
     { name: "Scotti Arborio Rice", short: "Arborio rice", qty: 1, unit: "ea" },
     { name: "Diamond Pasta Orzo", short: "Orzo pasta", qty: 1, unit: "ea" },
-    { name: "Tio Pablo Corn Tortillas Gluten Free", short: "Corn tortillas", qty: 1, unit: "ea" },
+    { name: "Tio Pablo Corn Tortillas Gluten Free", short: "Corn tortillas", qty: 1, unit: "ea", regular: true },
     { name: "Harraways Oats Extra Creamy", short: "Oats", qty: 1, unit: "ea" },
-    { name: "Ceres Organics Brown Rice Crackers Original", short: "Rice crackers", qty: 2, unit: "ea" },
+    { name: "Ceres Organics Brown Rice Crackers Original", short: "Rice crackers", qty: 2, unit: "ea", regular: true },
     { name: "Woolworths Brown Sugar", short: "Brown sugar", qty: 1, unit: "ea" },
     { name: "Freshlife Chickpea Flour Gluten Free", short: "Chickpea flour", qty: 1, unit: "ea" },
     { name: "Soba noodles", qty: 1, unit: "ea" },
@@ -368,21 +368,21 @@ const CATEGORIES = [
     { name: "Greggs Cinnamon Ground", short: "Ground cinnamon", qty: 1, unit: "ea" },
   ]},
   { name: "Dairy Alternatives", items: [
-    { name: "Sanitarium So Good Oat High Fibre & Prebiotics", short: "Oat milk", qty: 2, unit: "ea" },
+    { name: "Sanitarium So Good Oat High Fibre & Prebiotics", short: "Oat milk", qty: 2, unit: "ea", regular: true },
   ]},
   { name: "Oils", items: [
     { name: "Woolworths Olive Oil Extra Virgin", short: "Olive oil", qty: 1, unit: "ea" },
     { name: "Coconut oil", qty: 1, unit: "ea" },
   ]},
   { name: "Ceres Organics Sauerkraut", items: [
-    { name: "Ceres Organics Sauerkraut", short: "Sauerkraut", qty: 1, unit: "ea" },
+    { name: "Ceres Organics Sauerkraut", short: "Sauerkraut", qty: 1, unit: "ea", regular: true },
   ]},
 ];
 
 // runtime state lives directly on each item: item.selected, item.qty (starts at defaultQty)
 CATEGORIES.forEach(cat => cat.items.forEach(item => {
   item.defaultQty = item.qty;
-  item.selected = !!item.always;
+  item.selected = !!(item.always || item.regular);
 }));
 
 const TOTAL_STEPS = CATEGORIES.length + 1; // + review page
@@ -438,9 +438,18 @@ function renderCategoryPage(catIndex) {
   mainEl.innerHTML = html;
 }
 
-const AI_SHOPPER_INSTRUCTIONS = `I need you to do a grocery shop for me on Woolworths NZ, delivering to my local store in Gisborne, New Zealand. Please schedule the soonest available delivery slot. Where an item has multiple options, prioritise the healthiest version (e.g. less added sugar, fewer additives, wholegrain over refined, organic where reasonably priced). I will do a final review of the cart and complete the purchase myself — please don't finalise payment.
+const AI_SHOPPER_INSTRUCTIONS = `Please do a grocery shop on Woolworths NZ.
 
-One shopping rule to apply throughout: for any canned items (beans, chickpeas, lentils, tomatoes, coconut cream), skip Macro Organic brand specifically — the price premium isn't worth it, so any standard or Woolworths house brand is fine.`;
+Store and delivery:
+- Deliver to 22 Pare Street, Wainui, Gisborne. Leave at the front door.
+- Book the soonest available delivery slot unless told otherwise.
+- The order goes on Rebecca's account. Confirmations go to rebeccastory11@gmail.com.
+- Jesse reviews the cart and pays. Never finalise payment.
+
+Choosing products:
+- Start with the exact product and size from recent orders.
+- For new or generic items, pick the healthiest version: less added sugar, fewer additives, wholegrain over refined, organic where reasonably priced.
+- Canned items (beans, chickpeas, lentils, tomatoes, coconut cream): skip Macro Organic. Standard or Woolworths house brand is fine.`;
 
 function buildOutputText() {
   const lines = [];
@@ -494,7 +503,7 @@ function renderReviewPage() {
   });
   document.getElementById("resetBtn").addEventListener("click", () => {
     CATEGORIES.forEach(cat => cat.items.forEach(item => {
-      item.selected = !!item.always;
+      item.selected = !!(item.always || item.regular);
       item.qty = item.defaultQty;
     }));
     step = 0;
